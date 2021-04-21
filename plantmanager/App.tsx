@@ -1,8 +1,31 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
-import { Welcome } from "./src/pages/Welcome";
+import { StyleSheet } from "react-native";
+import AppLoading from "expo-app-loading";
+
+import Routes from "./src/routes";
+
+/**
+ * Estamos importando as fontes na raiz do projeto para que seja possível utiliza-las
+ * em qualquer componente
+ */
+import {
+  useFonts,
+  Jost_400Regular,
+  Jost_600SemiBold,
+} from "@expo-google-fonts/jost";
+
 export default function app() {
-  return <Welcome></Welcome>;
+  /**
+   * Nesta etapa estamos setando as fontes para serem utilizadas,
+   * realizamos um teste para checar se as fontes já encontram-se carregadas,
+   * caso não estejam é exibido apenas a tela de splash do app
+   */
+  const [fontsLoaded] = useFonts({ Jost_400Regular, Jost_600SemiBold });
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+    return <Routes />;
+  }
 }
 
 const style = StyleSheet.create({

@@ -1,44 +1,45 @@
-import React from 'react'
-import { TouchableOpacity, Text, StyleSheet, TouchableOpacityProps } from 'react-native'
-import colors from '../styles/colors'
+import React from "react";
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  TouchableOpacityProps,
+} from "react-native";
+import colors from "../styles/colors";
+import fonts from "../styles/fonts";
 
 /**
- * interface é usada no typescript para forçar que 
- * ao utilizarmos o componente seja informado
- * os parametros criados aqui na interface, estamos
- * extendendo o touchable... para utilizarmos a função
- * onPress
+ * Usamos a interface para criar as propriedades que deverão ser passadas
+ * para o componente botão de forma obrigatória ao utilizar o componente
  */
 interface ButtonProps extends TouchableOpacityProps {
-    title: string
+  title: string;
 }
+
+/**
+ * Como parâmetro da função devemos passar o title como configurado
+ * na interface e o '...rest' significa que estamos instanciando
+ * todos os demais parametros passados como o onPress por exemplo
+ */
 export function Button({ title, ...rest }: ButtonProps) {
-    return (
-        <TouchableOpacity
-            style={styles.button}
-            activeOpacity={0.8}
-            {...rest}
-        >
-            <Text style={styles.buttonText}>
-                {title}
-            </Text>
-        </TouchableOpacity>
-    )
+  return (
+    <TouchableOpacity style={styles.container} {...rest}>
+      <Text style={styles.text}>{title}</Text>
+    </TouchableOpacity>
+  );
 }
 
 const styles = StyleSheet.create({
-
-    button: {
-        backgroundColor: colors.green,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 16,
-        marginBottom: 10,
-        height: 56,
-        paddingHorizontal: 10
-    },
-    buttonText: {
-        color: colors.white,
-        fontSize: 24
-    }
-})
+  container: {
+    backgroundColor: colors.green,
+    height: 56,
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    fontSize: 16,
+    color: colors.white,
+    fontFamily: fonts.heading,
+  },
+});
