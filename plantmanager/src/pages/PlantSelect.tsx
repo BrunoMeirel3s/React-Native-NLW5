@@ -13,9 +13,15 @@ import { Header } from "../components/Header";
 
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
-import api from "./../services/api";
 import { PlantCardPrimary } from "../components/PlantCardPrimary";
 import { Load } from "../components/Load";
+
+/**
+ * api será utilizado para realizar as requisições para o nosso
+ * backend, utilizaremos o axios para realizar as requisições
+ * para um json server com baseUrl local
+ */
+import api from "./../services/api";
 
 interface EnviromentProps {
   key: string;
@@ -45,8 +51,20 @@ export function PlantSelect() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadedAll, setLoadedAll] = useState(false);
 
+  /**
+   * handleEnviromentSelected será utilizado para realizar o carregamento das plantas
+   * selecionados na tela principal com base no enviroment selecionado, pelo usuário
+   */
   function handleEnviromentSelected(enviroment: string) {
+
+    //setEnviromentSelected apenas muda o estado para o enviroment selecionado
     setEnviromentSelected(enviroment);
+
+    /**
+     * Se o enviroment selecionado for "Todos" setamos setFilteredPlants
+     * para o valor armazenado no estado 'plants' que recebe
+     * todas as plantas ao realizar uma requisição para o backend
+     */
     if (enviroment == "all") {
       return setFilteredPlants(plants);
     }
@@ -56,6 +74,17 @@ export function PlantSelect() {
     );
     setFilteredPlants(filtered);
   }
+
+  function handleFetchMore(distance: number) {
+    if (distance < 1) {
+      return;
+    }
+
+    setLoadingMore(true);
+    setPage((oldValue) => oldValue + 1);
+    fetchPlants();
+  }
+
 
   useEffect(() => {
     async function fetchEnviroment() {
@@ -92,16 +121,6 @@ export function PlantSelect() {
 
     setLoading(false);
     setLoadingMore(false);
-  }
-
-  function handleFetchMore(distance: number) {
-    if (distance < 1) {
-      return;
-    }
-
-    setLoadingMore(true);
-    setPage((oldValue) => oldValue + 1);
-    fetchPlants();
   }
 
   useEffect(() => {
