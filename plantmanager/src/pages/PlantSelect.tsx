@@ -69,12 +69,21 @@ export function PlantSelect() {
       return setFilteredPlants(plants);
     }
 
+    /**
+     * Aqui iremos realizar um filtro em cima do estado
+     * "plants" checando em todas as plantas se elas possuem
+     * o valor passado como parametro para handleEnviromentSelected
+     * que é o enviroment selecionado, o filter em questão retorna
+     * as plantas que possuem o enviroment selecionado em seu 
+     * camp "environments"
+     */
     const filtered = plants?.filter((plant) =>
       plant.environments.includes(enviroment)
     );
     setFilteredPlants(filtered);
   }
 
+  
   function handleFetchMore(distance: number) {
     if (distance < 1) {
       return;
