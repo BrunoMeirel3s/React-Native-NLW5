@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
   Keyboard,
+  Alert,
 } from "react-native";
 
 /**
@@ -16,6 +17,12 @@ import {
  * no routes, lembrando que o mesmo deve ser devidamente instalado
  */
 import { useNavigation } from "@react-navigation/core";
+
+/**
+ * AsyncStorage será utilizado para armazenamento de informações da
+ * aplicação diretamente no dispositivo do usuário
+ */
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Button } from "../components/Button";
 import colors from "../styles/colors";
@@ -30,7 +37,12 @@ export function UserIdentification() {
    * configurado la no routes
    *  */
   const navigation = useNavigation();
-  function handleSubmit() {
+
+  async function handleSubmit() {
+    if (!name) {
+      return Alert.alert("Me diz como chamar você 😢");
+    }
+    await AsyncStorage.setItem("@plantmanager:user", name);
     navigation.navigate("Confirmation");
   }
 
@@ -64,7 +76,8 @@ export function UserIdentification() {
    */
   function handleInputChange(value: string) {
     setIsFilled(!!value);
-    setName(value);
+    //Importante usar o trim para remover caracter em branco no inicio e final
+    setName(value.trim());
   }
 
   return (

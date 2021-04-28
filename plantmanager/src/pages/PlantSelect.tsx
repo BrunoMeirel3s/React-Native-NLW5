@@ -49,14 +49,14 @@ export function PlantSelect() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [loadedAll, setLoadedAll] = useState(false);
+
+  const navigation = useNavigation();
 
   /**
    * handleEnviromentSelected será utilizado para realizar o carregamento das plantas
    * selecionados na tela principal com base no enviroment selecionado, pelo usuário
    */
   function handleEnviromentSelected(enviroment: string) {
-
     //setEnviromentSelected apenas muda o estado para o enviroment selecionado
     setEnviromentSelected(enviroment);
 
@@ -74,7 +74,7 @@ export function PlantSelect() {
      * "plants" checando em todas as plantas se elas possuem
      * o valor passado como parametro para handleEnviromentSelected
      * que é o enviroment selecionado, o filter em questão retorna
-     * as plantas que possuem o enviroment selecionado em seu 
+     * as plantas que possuem o enviroment selecionado em seu
      * camp "environments"
      */
     const filtered = plants?.filter((plant) =>
@@ -83,7 +83,6 @@ export function PlantSelect() {
     setFilteredPlants(filtered);
   }
 
-  
   function handleFetchMore(distance: number) {
     if (distance < 1) {
       return;
@@ -93,7 +92,6 @@ export function PlantSelect() {
     setPage((oldValue) => oldValue + 1);
     fetchPlants();
   }
-
 
   useEffect(() => {
     async function fetchEnviroment() {
@@ -132,6 +130,10 @@ export function PlantSelect() {
     setLoadingMore(false);
   }
 
+  function handlePlantSelect(plant: PlantsProps) {
+    navigation.navigate("PlantSave", { plant });
+  }
+
   useEffect(() => {
     fetchPlants();
   }, []);
@@ -149,6 +151,7 @@ export function PlantSelect() {
         <View>
           <FlatList
             data={enviroments}
+            keyExtractor={(item) => String(item.key)}
             renderItem={({ item }) => (
               <EnviromentButton
                 title={item.title}
@@ -165,8 +168,14 @@ export function PlantSelect() {
         <View style={styles.plants}>
           <FlatList
             data={filteredPlants}
+            keyExtractor={(item) => String(item.id)}
             showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => <PlantCardPrimary data={item} />}
+            renderItem={({ item }) => (
+              <PlantCardPrimary
+                data={item}
+                onPress={() => handlePlantSelect(item)}
+              />
+            )}
             numColumns={2}
             onEndReachedThreshold={0.1}
             onEndReached={({ distanceFromEnd }) => {

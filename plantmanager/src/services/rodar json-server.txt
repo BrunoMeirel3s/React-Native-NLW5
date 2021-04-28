@@ -1,4 +1,4 @@
-json-server server.json --host 192.168.101.13 --port 3333
+json-server server.json --host 192.168.101.13 --port 3333 --delay 700
 
 Comando para startar o json-server, necessário rodar com o prompt
 dentro do local onde está o json
