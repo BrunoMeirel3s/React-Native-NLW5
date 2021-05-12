@@ -27,7 +27,7 @@ export function MyPlants() {
         onPress: async () => {
           try {
             await removePlant(plant.id);
-
+            console.warn(plant);
             setMyPlants((oldData) =>
               oldData.filter((item) => item.id != plant.id)
             );
@@ -83,7 +83,7 @@ export function MyPlants() {
                 handleRemove={() => handleRemove(item)}
               />
             )}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
             contentContainerStyle={{ flex: 1 }}
           ></FlatList>
         </View>
