@@ -2,15 +2,12 @@ import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import AppLoading from "expo-app-loading";
 
-import * as Notifications from "expo-notifications";
-
 import Routes from "./src/routes";
 
 /**
  * Estamos importando as fontes na raiz do projeto para que seja possível utiliza-las
  * em qualquer componente
  */
-import { PlantProps } from "./src/libs/storage";
 import {
   useFonts,
   Jost_400Regular,
@@ -24,24 +21,11 @@ export default function app() {
    * caso não estejam é exibido apenas a tela de splash do app
    */
   const [fontsLoaded] = useFonts({ Jost_400Regular, Jost_600SemiBold });
-
-  //useEffect(() => {
-  /*
-    const subscription = Notifications.addNotificationReceivedListener(
-      async (notification) => {
-        const data = notification.request.content.data.plant as PlantProps;
-        console.log(data);
-      }
-    );
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-  */
-
-  // }
-
   if (!fontsLoaded) {
+    /**
+     * AppLoading utiliza a imagem em "assets/splash.png" para
+     * criar o splash de iniciação do aplicativo
+     */
     return <AppLoading />;
   } else {
     return <Routes />;
