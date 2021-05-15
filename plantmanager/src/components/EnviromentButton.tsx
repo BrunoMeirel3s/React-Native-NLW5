@@ -31,7 +31,7 @@ export function EnviromentButton({
       {...rest}
     >
       {/**
-       * Caso EnviromentButton receba o paraemetro 'active' iremos adicionar
+       * Caso EnviromentButton receba o parametro 'active' iremos adicionar
        * estilos diferentes ao botão e ao texto interno
        */}
       <Text style={[styles.text, active && styles.textActive]}>{title}</Text>

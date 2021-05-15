@@ -7,8 +7,19 @@ import fonts from "../styles/fonts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function Header() {
+  /**
+   * Aqui começamos a utilizar o conceito de estados,
+   * o estado userName será utilizado para armazenar o nome do usuário informado ao abrir a aplicação,
+   * iremos usar o AsyncStorage para obter o nome do usuário e então setar no estado
+   */
   const [userName, setUserName] = useState<string>();
 
+  /**
+   * useEffect é um hook que é utilizado sempre entramos na tela que possuir este
+   * componente "Header", observe que criamos uma async function para obter
+   * o nome do usuário gravado com o AsyncStorage, devemos usar o async storage pois não sabemos
+   * o tempo que irá demorar para o app obter essa informação
+   */
   useEffect(() => {
     async function loadStoragedUserName() {
       const user = await AsyncStorage.getItem("@plantmanager:user");

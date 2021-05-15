@@ -1,16 +1,31 @@
 import React from "react";
 import { StyleSheet, Text, View, Animated } from "react-native";
 import { RectButton, RectButtonProps } from "react-native-gesture-handler";
+/**
+ * Swipeable será utilizado para criar o elemento plantCardSecondary com a
+ * opção de deslize lateral para que seja então mostrado o botão de delete
+ * da planta
+ */
 import Swipeable from "react-native-gesture-handler/Swipeable";
 /**
  * SvgFromUri será utilizado para renderizarmos fotos no formato svg
  */
 import { SvgFromUri } from "react-native-svg";
+
+/**
+ * Feather será utilizado para utilizarmos ícones vetoriais
+ * é uma biblioteca de ícones
+ */
 import { Feather } from "@expo/vector-icons";
 
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
 
+/**
+ * PlantCardSecondary precisa receber a foto, nome e horas
+ * para regar a planta, sendo assim iremos passar a hora setada
+ * pelo usuário e salva no asyncStorage
+ */
 interface PlantProps extends RectButtonProps {
   data: {
     name: string;
@@ -18,6 +33,11 @@ interface PlantProps extends RectButtonProps {
     hour: string;
   };
 
+  /**
+   * handleRemove será utilizado para excluir a plantinha
+   * por isso está sendo criado aqui porém também será criado no
+   * componente que for utilizar o plantCardSecondary
+   */
   handleRemove: () => void;
 }
 
