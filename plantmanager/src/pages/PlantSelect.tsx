@@ -32,7 +32,7 @@ interface EnviromentProps {
 export function PlantSelect() {
   const [enviroments, setEnviroments] = useState<EnviromentProps[]>();
   const [plants, setPlants] = useState<PlantProps[]>();
-  const [filteredPlants, setFilteredPlants] = useState<PlantsProps[]>();
+  const [filteredPlants, setFilteredPlants] = useState<PlantProps[]>();
   const [enviromentSelected, setEnviromentSelected] = useState("all");
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -118,7 +118,7 @@ export function PlantSelect() {
     setLoadingMore(false);
   }
 
-  function handlePlantSelect(plant: PlantsProps) {
+  function handlePlantSelect(plant: PlantProps) {
     navigation.navigate("PlantSave", { plant });
   }
 
