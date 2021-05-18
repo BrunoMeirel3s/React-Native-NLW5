@@ -91,7 +91,11 @@ export async function savePlant(plant: PlantProps): Promise<void> {
     );
 
     /**
-     * Parei Aqui <---------------------------
+     * Aqui criamos um const "notificationId" a mesma irá receber um "Evento" de notificação
+     * que será armazenado junto a planta, neste evento é possível definir quando será chamado
+     * a notificação(Em quantos segundos a partir que o evento for gravado no dispositivo) e podemos
+     * definir se o mesmo será repitido ou não, abaixo 'seconds' é definido com base na diferença
+     * de tempo entre o agendamento do evento e o tempo atual
      */
     const notificationId = await Notifications.scheduleNotificationAsync({
       content: {
@@ -109,6 +113,18 @@ export async function savePlant(plant: PlantProps): Promise<void> {
       },
     });
 
+    /**
+     * data recebe todas as plantas armazenadas no dispositivo, oldPlants recebe
+     * as plantas porém é feito uma checagem, caso data não tenha recebido dados por não
+     * haver plantas salvas então oldPlants recebe um objeto vazio, caso contrário
+     * iremos transformar data que nos é retornado como JSON para um objeto utilizando
+     * JSON.parse e então iremos inserir este valor em oldPlants, utilizaremos ainda a 
+     * interface StoragePlantProps para garantir que todas as plantas possuam os mesmos
+     * atributos.
+     * Por fim newPlant recebe o plant.id como identificador e então recebe como data
+     * a planta passada como parâmetro para a função SavePlant, observe que estamos salvando junto
+     * a planta o notificationId também, ou seja estamos salvando a notificação
+     */
     const data = await AsyncStorage.getItem("@plantmanager:plants");
     const oldPlants = data ? (JSON.parse(data) as StoragePlantProps) : {};
     const newPlant = {
@@ -118,6 +134,11 @@ export async function savePlant(plant: PlantProps): Promise<void> {
       },
     };
 
+    /**
+     * Para finalizar o salvamento é realizado o setItem da nova planta,
+     * para isso transformamos o objeto newPlant e oldPlants em um JSON
+     * para poder salva-los usando o AsyncStorage
+     */
     await AsyncStorage.setItem(
       "@plantmanager:plants",
       JSON.stringify({
@@ -130,11 +151,29 @@ export async function savePlant(plant: PlantProps): Promise<void> {
   }
 }
 
+/**
+ * loadPlant será utilizado para carregar as plantas que estão salvas no dispositivo 
+ * do usuário, para isto utilizamos a interface PlantProps afim de garantir que 
+ * os dados retornados seguirão o mesmo padrão
+ */
 export async function loadPlant(): Promise<PlantProps[]> {
   try {
+    /**
+     * data recebe de forma bruta os dados das plantas salvas no dispositivo do usuário
+     * plantas recebe o tratamento destes dados, igual na função savePlant
+     */
     const data = await AsyncStorage.getItem("@plantmanager:plants");
     const plants = data ? (JSON.parse(data) as StoragePlantProps) : {};
 
+    /**
+     * plantsSorted receberá as plantas sorteadas de acordo com a data de notificação
+     * das mesmas, para isso usamos o Object.keys(plants) para percorrer os identificadores
+     * das plantas que quando salvamos nós definimos como sendo o próprio plant.id, sendo assim,
+     * ao realizamos o map iremos percorrer os ids das plantas, com base nisso iremos retornar a planta mais
+     * um elemento hora que será a hora de notificação da planta formatada em HH:mm.
+     * 
+     * Por fim é realizado o sort que retorna os elementos organizados de acordo com a data de notificação
+     */
     const plantsSorted = Object.keys(plants)
       .map((plant) => {
         return {
@@ -157,16 +196,24 @@ export async function loadPlant(): Promise<PlantProps[]> {
   }
 }
 
+/**
+ * removePlant será utilizado para realizar o delete de uma planta armazenada no dispositivo,
+ * para isto será realizado basicamente o carregamento de todas as plantas salvas
+ * no dispositivo do usuário e após isto iremos procurar a planta que queremos
+ * excluir com base no id passado para removePlant
+ */
 export async function removePlant(id: string): Promise<void> {
   const data = await AsyncStorage.getItem("@plantmanager:plants");
   const plants = data ? (JSON.parse(data) as StoragePlantProps) : {};
 
+  //Necessário cancelar o agendamento de notificações da planta excluída
   await Notifications.cancelScheduledNotificationAsync(
     plants[id].notificationId
   );
 
+  //delete da planta com base no id passado para removePlant
   delete plants[id];
-  console.warn(id);
 
+  //após realizar o delete é necessário gravas as plantas novamente no dispositivo
   await AsyncStorage.setItem("@plantmanager:plants", JSON.stringify(plants));
 }

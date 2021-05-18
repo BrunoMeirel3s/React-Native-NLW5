@@ -1,3 +1,7 @@
+/**
+ * MyPlants será a tela responsável por exibir as plantas salvas na seleção
+ * inicial, aqui também poderemos deletar as plantas salvas 
+ */
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Image, FlatList, Alert } from "react-native";
 import { Header } from "../components/Header";
@@ -12,10 +16,19 @@ import { PlantCardSecondary } from "../components/PlantCardSecondary";
 import { Load } from "../components/Load";
 
 export function MyPlants() {
+  //estados que serão utilizados nesta tela
   const [myPlants, setMyPlants] = useState<PlantProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [nextWatered, setNextWatered] = useState<string>();
 
+  /**
+   * função handleRemove será utilizada para realizar a exclusão da planta
+   * agendada, para isto, ao clicar sobre o botão iremos exibir o Alert criado
+   * abaixo, caso seja clicado em sim é disparado a função removePlant trazida lá de 
+   * storage, para isto iremos passar o id da planta, após remover a planta é realizada
+   * a remoção da planta do estado "myPlants", para isto recebemos os dados antigos e realizamos um filter
+   * em cima delas, retornando todos os valores que possuirem um id diferente do id da planta excluída
+   */
   function handleRemove(plant: PlantProps) {
     Alert.alert("Remover", `Deseja remover a ${plant.name}?`, [
       {
@@ -27,7 +40,6 @@ export function MyPlants() {
         onPress: async () => {
           try {
             await removePlant(plant.id);
-            console.warn(plant);
             setMyPlants((oldData) =>
               oldData.filter((item) => item.id != plant.id)
             );
@@ -39,6 +51,17 @@ export function MyPlants() {
     ]);
   }
 
+  /**
+   * useEffect é utilizado para carregar determinada função assim que a tela é carregada,
+   * na função loadStorageData estamos criando uma constante plantsStoraged que recebe
+   * todas as plantas salvas no dispositivo, para isto utilizamos a função loadPlant
+   * que foi definida lá em storage.
+   * 
+   * nextTime recebe a primeira planta que está em plantsStorage já que elas são retornadas 
+   * ordenadas de acordo com a horá de regagem, utilizamos o formatDistante para calcular
+   * a distância em tempo da data atual até a data da regagem, desta forma nextTime receberá
+   * a hora, minuto ou segundo até a regagem da próxima planta
+   */
   useEffect(() => {
     async function loadStorageData() {
       const plantsStoraged = await loadPlant();
@@ -49,15 +72,21 @@ export function MyPlants() {
         { locale: ptBR }
       );
 
+      //setNextWaterede será o texto que será exibido informando a próxima planta a ser regada
       setNextWatered(
         `Não esqueça de regar a ${plantsStoraged[0].name} daqui à ${nextTime}`
       );
+
+      //myPlants recebe então as plantas carregadas
       setMyPlants(plantsStoraged);
+
+      //após conseguirmos obter as plantas o loading é tornado como falso para poder deixar de exibir a imagem de carregamento
       if (plantsStoraged) {
         setLoading(false);
       }
     }
 
+    //Por fim executamos a função loadStorageData
     loadStorageData();
   }, []);
 
@@ -74,6 +103,15 @@ export function MyPlants() {
 
         <View style={styles.plants}>
           <Text style={styles.plantTitle}>Próximas regadas</Text>
+          {/**
+           * FlatList é utilizado aqui para renderizar os diversos cards com as plantas
+           * salvas, para isso passamos as plantas carregadas para o atributo data,
+           * keyExtractor precisa receber um identificador que possa distinguir as plantas,
+           * para isso passamos o id da planta, o renderItem realizará o carregamento do
+           * elemento, para isto iremos passar o plantCardSecondary passando para ele como
+           * atributo o item que será no caso a planta em si, o handleRemove será
+           * a função que realizará a exclusão da planta
+           */}
           <FlatList
             data={myPlants}
             keyExtractor={(item) => String(item.id)}
