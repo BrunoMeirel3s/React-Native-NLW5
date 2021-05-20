@@ -1,3 +1,7 @@
+/**
+ * O UserIndentification será utilizado para realizar a identificação
+ * do usuário, para que ele possa colocar o seu nome
+ */
 import React, { useState } from "react";
 import {
   SafeAreaView,
@@ -38,6 +42,12 @@ export function UserIdentification() {
    *  */
   const navigation = useNavigation();
 
+  /**
+   * handleSubmit irá realizar o salvamento do nome do usuário, para isto iremos
+   * checar, se o nome não estiver setado a função será retornada com um alerta,
+   * caso contrário iremos salvar o nome do usuário usando o AsyncStorage e após isto iremos
+   * direcionar o usuário para a tela de confirmação
+   */
   async function handleSubmit() {
     if (!name) {
       return Alert.alert("Me diz como chamar você 😢");

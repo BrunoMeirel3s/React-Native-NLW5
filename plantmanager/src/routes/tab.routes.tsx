@@ -1,3 +1,6 @@
+/**
+ * tabRoutes será a navegação de rodapé que iremos utilizar em nosso aplicativo
+ */
 import React from "react";
 import { Platform } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -21,6 +24,9 @@ const AuthRoutes = () => {
         },
       }}
     >
+      {/** 
+       * Abaixo é feita a configuração dos botões bem como quais componentes cada um deve chamar
+      */}
       <appTab.Screen
         name="Nova Planta"
         component={PlantSelect}

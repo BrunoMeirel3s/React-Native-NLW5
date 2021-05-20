@@ -39,6 +39,11 @@ const AppRoutes: React.FC = () => (
       component={UserIdentification}
     />
     <stackRoutes.Screen name="Confirmation" component={Confirmation} />
+    {/**
+     * Aqui está o segredo para exibir a barra inferior de navegação, nas telas que for
+     * necessário exibi-la ao invés de chamar o componente da tela devemos chamar o 
+     * AuthRoutes que é a barra de menu inferior
+     */}
     <stackRoutes.Screen name="PlantSelect" component={AuthRoutes} />
     <stackRoutes.Screen name="PlantSave" component={PlantSave} />
     <stackRoutes.Screen name="MyPlants" component={AuthRoutes} />
